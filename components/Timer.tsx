@@ -4,7 +4,7 @@ import { Button, TextField } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import { useInterval } from "react-use";
 
-type TimerState = "ready" | "running" | "paused" | "stopped";
+type TimerState = "ready" | "running" | "paused" | "elapsed" | "stopped";
 
 export function Timer() {
   const [timerState, setTimerState] = React.useState<TimerState>("stopped");
@@ -26,9 +26,10 @@ export function Timer() {
 
   useInterval(
     () => {
-      setRemainingTime(remainingTime.minus({ seconds: 1 }));
-      if (remainingTime.as("seconds") === 0) {
-        setTimerState("stopped");
+      if (remainingTime.as("seconds") > 0) {
+        setRemainingTime(remainingTime.minus({ seconds: 1 }));
+      } else {
+        setTimerState("elapsed");
       }
     },
     timerState === "running" ? 1000 : null
@@ -117,6 +118,21 @@ export function Timer() {
             fullWidth
           >
             Stop
+          </Button>
+        </>
+      )}
+
+      {timerState === "elapsed" && (
+        <>
+          <p>Finished</p>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            type="button"
+            onClick={stop}
+          >
+            Done
           </Button>
         </>
       )}
