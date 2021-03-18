@@ -1,33 +1,39 @@
 import * as React from "react";
 import * as Luxon from "luxon";
 import { Button } from "@material-ui/core";
-import { useBoolean, useInterval } from "react-use";
+import { useInterval } from "react-use";
 
 type Props = {
   duration: Luxon.Duration;
 };
 
-type TimerState = "ready" | "starting" | "running";
+type TimerState = "ready" | "running" | "paused";
 
 export function Timer({ duration }: Props) {
-  // May want to allow duration to be null and initialise timerState differently in future
-  // const [timerState, setTimerState] = React.useState<TimerState>("ready");
+  const [timerState, setTimerState] = React.useState<TimerState>("ready");
   const [
     remainingTime,
     setRemainingTime,
-  ] = React.useState<Luxon.Duration | null>(null);
-  const [isRunning, toggleIsRunning] = useBoolean(false);
-
-  React.useEffect(() => {
-    setRemainingTime(duration);
-  }, []);
+  ] = React.useState<Luxon.Duration | null>(duration);
 
   useInterval(
     () => {
       setRemainingTime(remainingTime.minus({ seconds: 1 }));
     },
-    isRunning ? 1000 : null
+    timerState === "running" ? 1000 : null
   );
+
+  function startTimer() {
+    setTimerState("running");
+  }
+
+  function togglePaused() {
+    if (timerState === "paused") {
+      setTimerState("running");
+    } else if (timerState === "running") {
+      setTimerState("paused");
+    }
+  }
 
   return (
     <>
@@ -39,9 +45,17 @@ export function Timer({ duration }: Props) {
         )}
       </div>
 
-      <Button variant="contained" onClick={toggleIsRunning}>
-        {isRunning ? "Pause" : "Start"}
-      </Button>
+      {timerState === "ready" && (
+        <Button variant="contained" type="button" onClick={startTimer}>
+          Start
+        </Button>
+      )}
+
+      {(timerState === "running" || timerState === "paused") && (
+        <Button variant="contained" type="button" onClick={togglePaused}>
+          {timerState === "running" ? "Pause" : "Resume"}
+        </Button>
+      )}
     </>
   );
 }
