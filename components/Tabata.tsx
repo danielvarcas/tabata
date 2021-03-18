@@ -6,17 +6,24 @@ import { Timer } from "./Timer";
 
 export type TabataState = "initialised" | "uninitialised" | null;
 
+type FormValues = {
+  duration: Duration;
+  sets: number;
+};
+
 export function Tabata() {
   const theme = useTheme();
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm<FormValues>();
   const [state, setState] = React.useState<TabataState>(null);
   const [duration, setDuration] = React.useState<Duration | null>(null);
+  const [sets, setSets] = React.useState<number | null>(null);
 
   function onSubmit(data) {
     const [hours, minutes, seconds] = data.timer.split(":");
     const duration = Duration.fromObject({ hours, minutes, seconds });
 
     setDuration(duration);
+    setSets(Number(data.sets)); // TS linting not working. Shouldn't have to use Number()?
   }
 
   React.useEffect(() => {
@@ -33,14 +40,25 @@ export function Tabata() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box margin={theme.spacing(0.25)}>
             <TextField
-              type="time"
               name="timer"
+              label="Work time"
+              type="time"
               inputRef={register}
               defaultValue={duration?.toFormat("hh:mm:ss") || "00:00:00"}
               inputProps={{ step: 1 }}
+              fullWidth
             />
           </Box>
-
+          <Box margin={theme.spacing(0.25)}>
+            <TextField
+              name="sets"
+              label="Sets"
+              type="number"
+              defaultValue={sets || 0}
+              inputRef={register}
+              fullWidth
+            />
+          </Box>
           <Button type="submit" variant="contained" color="primary" fullWidth>
             Set
           </Button>
@@ -52,7 +70,7 @@ export function Tabata() {
   if (state === "initialised") {
     return (
       <>
-        <Timer duration={duration} setTabataState={setState} />
+        <Timer duration={duration} sets={sets} setTabataState={setState} />
       </>
     );
   }

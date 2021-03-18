@@ -6,12 +6,13 @@ import { TabataState } from "./Tabata";
 
 type Props = {
   duration: Duration;
+  sets: number;
   setTabataState: React.Dispatch<React.SetStateAction<TabataState>>;
 };
 
 export type TimerState = "ready" | "running" | "paused" | "elapsed";
 
-export function Timer({ duration, setTabataState }: Props) {
+export function Timer({ duration, sets, setTabataState }: Props) {
   const [timerState, setTimerState] = React.useState<TimerState>("ready");
 
   function startTimer() {
@@ -35,6 +36,7 @@ export function Timer({ duration, setTabataState }: Props) {
       {timerState !== "elapsed" && (
         <Time
           duration={duration}
+          sets={sets}
           timerState={timerState}
           setTimerState={setTimerState}
         />

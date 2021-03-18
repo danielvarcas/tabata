@@ -5,27 +5,39 @@ import { TimerState } from "./Timer";
 
 type Props = {
   duration: Duration;
+  sets: number;
   timerState: TimerState;
   setTimerState: React.Dispatch<React.SetStateAction<TimerState>>;
 };
 
-export function Time({ duration, timerState, setTimerState }: Props) {
-  const [remaining, setRemaining] = React.useState<Duration>(duration);
+export function Time({ duration, sets, timerState, setTimerState }: Props) {
+  const [remainingTime, setRemainingTime] = React.useState<Duration>(duration);
+  const [completedSets, setCompletedSets] = React.useState(0);
 
   useInterval(
     () => {
-      if (remaining.as("seconds") > 0) {
-        setRemaining(remaining.minus({ seconds: 1 }));
+      if (remainingTime.as("seconds") > 0) {
+        setRemainingTime(remainingTime.minus({ seconds: 1 }));
       } else {
-        setTimerState("elapsed");
+        setCompletedSets(completedSets + 1);
+        setRemainingTime(duration);
       }
     },
     timerState === "running" ? 1000 : null
   );
 
+  React.useEffect(() => {
+    if (completedSets === sets) {
+      setTimerState("elapsed");
+    }
+  }, [sets, completedSets]);
+
   return (
     <div>
-      <p>{remaining.toFormat("hh : mm : ss")} </p>
+      <p>
+        Set {completedSets + 1} of {sets}
+      </p>
+      <p>{remainingTime.toFormat("hh : mm : ss")} </p>
     </div>
   );
 }
