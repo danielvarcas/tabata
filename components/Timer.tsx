@@ -7,7 +7,7 @@ import { useInterval } from "react-use";
 type TimerState = "ready" | "running" | "paused" | "stopped";
 
 export function Timer() {
-  const [timerState, setTimerState] = React.useState<TimerState>("ready");
+  const [timerState, setTimerState] = React.useState<TimerState>("stopped");
   const [
     remainingTime,
     setRemainingTime,
@@ -27,8 +27,11 @@ export function Timer() {
   useInterval(
     () => {
       setRemainingTime(remainingTime.minus({ seconds: 1 }));
+      if (remainingTime.as("seconds") === 0) {
+        setTimerState("stopped");
+      }
     },
-    timerState === "running" && remainingTime.as("seconds") > 0 ? 1000 : null
+    timerState === "running" ? 1000 : null
   );
 
   function startTimer() {
@@ -48,6 +51,7 @@ export function Timer() {
   }
 
   React.useEffect(() => {
+    console.log(timerState);
     if (timerState === "stopped") {
       setRemainingTime(null);
     }
