@@ -1,16 +1,16 @@
 import * as React from "react";
-import * as Luxon from "luxon";
+import { Duration } from "luxon";
 import { useInterval } from "react-use";
 import { TimerState } from "./Timer";
 
 type Props = {
-  duration: Luxon.Duration;
+  duration: Duration;
   timerState: TimerState;
   setTimerState: React.Dispatch<React.SetStateAction<TimerState>>;
 };
 
 export function Time({ duration, timerState, setTimerState }: Props) {
-  const [remaining, setRemaining] = React.useState<Luxon.Duration>(duration);
+  const [remaining, setRemaining] = React.useState<Duration>(duration);
 
   useInterval(
     () => {

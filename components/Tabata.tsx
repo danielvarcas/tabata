@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as Luxon from "luxon";
+import { Duration } from "luxon";
 import { useForm } from "react-hook-form";
 import { Box, Button, TextField, useTheme } from "@material-ui/core";
 import { Timer } from "./Timer";
@@ -10,11 +10,11 @@ export function Tabata() {
   const theme = useTheme();
   const { register, handleSubmit } = useForm();
   const [state, setState] = React.useState<TabataState>(null);
-  const [duration, setDuration] = React.useState<Luxon.Duration | null>(null);
+  const [duration, setDuration] = React.useState<Duration | null>(null);
 
   function onSubmit(data) {
     const [hours, minutes, seconds] = data.timer.split(":");
-    const duration = Luxon.Duration.fromObject({ hours, minutes, seconds });
+    const duration = Duration.fromObject({ hours, minutes, seconds });
 
     setDuration(duration);
   }

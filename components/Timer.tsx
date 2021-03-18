@@ -1,11 +1,11 @@
 import * as React from "react";
-import * as Luxon from "luxon";
+import { Duration } from "luxon";
 import { Box, Button } from "@material-ui/core";
 import { Time } from "./Time";
 import { TabataState } from "./Tabata";
 
 type Props = {
-  duration: Luxon.Duration;
+  duration: Duration;
   setTabataState: React.Dispatch<React.SetStateAction<TabataState>>;
 };
 
