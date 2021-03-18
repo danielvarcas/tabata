@@ -4,9 +4,12 @@ import { useForm } from "react-hook-form";
 import { Box, Button, TextField, useTheme } from "@material-ui/core";
 import { Timer } from "./Timer";
 
+export type TabataState = "initialised" | "uninitialised" | null;
+
 export function Tabata() {
   const theme = useTheme();
   const { register, handleSubmit } = useForm();
+  const [state, setState] = React.useState<TabataState>(null);
   const [duration, setDuration] = React.useState<Luxon.Duration | null>(null);
 
   function onSubmit(data) {
@@ -16,7 +19,15 @@ export function Tabata() {
     setDuration(duration);
   }
 
-  if (duration === null) {
+  React.useEffect(() => {
+    setState(duration === null ? "uninitialised" : "initialised");
+  }, [duration]);
+
+  if (state === null) {
+    return null;
+  }
+
+  if (state === "uninitialised") {
     return (
       <>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -38,10 +49,10 @@ export function Tabata() {
     );
   }
 
-  if (duration !== null) {
+  if (state === "initialised") {
     return (
       <>
-        <Timer duration={duration} setDuration={setDuration} />
+        <Timer duration={duration} setTabataState={setState} />
       </>
     );
   }

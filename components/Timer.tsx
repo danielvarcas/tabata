@@ -2,15 +2,16 @@ import * as React from "react";
 import * as Luxon from "luxon";
 import { Box, Button } from "@material-ui/core";
 import { Time } from "./Time";
+import { TabataState } from "./Tabata";
 
 type Props = {
   duration: Luxon.Duration;
-  setDuration: React.Dispatch<React.SetStateAction<Luxon.Duration>>;
+  setTabataState: React.Dispatch<React.SetStateAction<TabataState>>;
 };
 
 export type TimerState = "ready" | "running" | "paused" | "elapsed";
 
-export function Timer({ duration, setDuration }: Props) {
+export function Timer({ duration, setTabataState }: Props) {
   const [timerState, setTimerState] = React.useState<TimerState>("ready");
 
   function startTimer() {
@@ -26,7 +27,7 @@ export function Timer({ duration, setDuration }: Props) {
   }
 
   function stop() {
-    setDuration(null);
+    setTabataState("uninitialised");
   }
 
   return (
