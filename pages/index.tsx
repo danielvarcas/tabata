@@ -1,9 +1,19 @@
 import * as React from "react";
 import Head from "next/head";
-import { Typography } from "@material-ui/core";
+import {
+  AppBar,
+  Box,
+  Container,
+  Grid,
+  Paper,
+  Toolbar,
+  Typography,
+  useTheme,
+} from "@material-ui/core";
 import { Timer } from "../components/Timer";
 
 export default function Home() {
+  const theme = useTheme();
   return (
     <div>
       <Head>
@@ -16,9 +26,19 @@ export default function Home() {
       </Head>
 
       <main>
-        <Typography variant="h1">Tabata</Typography>
+        <AppBar position="static" color="primary">
+          <Toolbar>
+            <Typography variant="h6">Tabata</Typography>
+          </Toolbar>
+        </AppBar>
 
-        <Timer />
+        <Container>
+          <Box marginTop={theme.spacing(0.25)}>
+            <Paper>
+              <Timer />
+            </Paper>
+          </Box>
+        </Container>
       </main>
     </div>
   );

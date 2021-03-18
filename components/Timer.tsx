@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as Luxon from "luxon";
-import { Button, TextField } from "@material-ui/core";
+import { Box, Button, Card, Paper, TextField } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import { useInterval } from "react-use";
 
@@ -58,84 +58,92 @@ export function Timer() {
     }
   }, [timerState]);
 
-  if (timerState === "stopped") {
+  function TimerContent() {
+    if (timerState === "stopped") {
+      return (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <TextField
+            type="time"
+            name="timer"
+            inputRef={register}
+            defaultValue="00:00:00"
+            inputProps={{ step: 1 }}
+          />
+
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Set
+          </Button>
+        </form>
+      );
+    }
+
     return (
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField
-          type="time"
-          name="timer"
-          inputRef={register}
-          defaultValue="00:00:00"
-          inputProps={{ step: 1 }}
-        />
+      <>
+        <div>
+          {remainingTime !== null && (
+            <div>
+              <p>{remainingTime.toFormat("hh : mm : ss")} </p>
+            </div>
+          )}
+        </div>
 
-        <Button type="submit" variant="contained" color="primary">
-          Set
-        </Button>
-      </form>
-    );
-  }
-
-  return (
-    <>
-      <div>
-        {remainingTime !== null && (
-          <div>
-            <p>Remaining: {remainingTime.toFormat("hh : mm : ss")} </p>
-          </div>
-        )}
-      </div>
-
-      {timerState === "ready" && (
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          type="button"
-          onClick={startTimer}
-        >
-          Start
-        </Button>
-      )}
-
-      {(timerState === "running" || timerState === "paused") && (
-        <>
-          <Button
-            variant="contained"
-            type="button"
-            onClick={togglePaused}
-            color={timerState === "running" ? "default" : "primary"}
-            fullWidth
-          >
-            {timerState === "running" ? "Pause" : "Resume"}
-          </Button>
-
-          <Button
-            variant="contained"
-            type="button"
-            onClick={stop}
-            color="secondary"
-            fullWidth
-          >
-            Stop
-          </Button>
-        </>
-      )}
-
-      {timerState === "elapsed" && (
-        <>
-          <p>Finished</p>
+        {timerState === "ready" && (
           <Button
             variant="contained"
             color="primary"
             fullWidth
             type="button"
-            onClick={stop}
+            onClick={startTimer}
           >
-            Done
+            Start
           </Button>
-        </>
-      )}
-    </>
+        )}
+
+        {(timerState === "running" || timerState === "paused") && (
+          <>
+            <Button
+              variant="contained"
+              type="button"
+              onClick={togglePaused}
+              color={timerState === "running" ? "default" : "primary"}
+              fullWidth
+            >
+              {timerState === "running" ? "Pause" : "Resume"}
+            </Button>
+
+            <Button
+              variant="contained"
+              type="button"
+              onClick={stop}
+              color="secondary"
+              fullWidth
+            >
+              Stop
+            </Button>
+          </>
+        )}
+
+        {timerState === "elapsed" && (
+          <>
+            <p>Finished</p>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              type="button"
+              onClick={stop}
+            >
+              Done
+            </Button>
+          </>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <Box display="flex" flexDirection="column" textAlign="center">
+      <TimerContent />
+    </Box>
   );
 }
