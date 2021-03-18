@@ -1,41 +1,47 @@
 import * as React from "react";
-import { Button, TextField } from "@material-ui/core";
-import { useForm } from "react-hook-form";
 import * as Luxon from "luxon";
+import { Button } from "@material-ui/core";
+import { useBoolean, useInterval } from "react-use";
 
-export function Timer() {
-  const { register, handleSubmit } = useForm();
-  const [duration, setDuration] = React.useState<Luxon.Duration | null>(null);
+type Props = {
+  duration: Luxon.Duration;
+};
 
-  function onSubmit(data) {
-    const [hours, minutes, seconds] = data.timer.split(":");
-    const duration = Luxon.Duration.fromObject({ hours, minutes, seconds });
+type TimerState = "ready" | "starting" | "running";
 
-    setDuration(duration);
-  }
+export function Timer({ duration }: Props) {
+  // May want to allow duration to be null and initialise timerState differently in future
+  // const [timerState, setTimerState] = React.useState<TimerState>("ready");
+  const [
+    remainingTime,
+    setRemainingTime,
+  ] = React.useState<Luxon.Duration | null>(null);
+  const [isRunning, toggleIsRunning] = useBoolean(false);
+
+  React.useEffect(() => {
+    setRemainingTime(duration);
+  }, []);
+
+  useInterval(
+    () => {
+      setRemainingTime(remainingTime.minus({ seconds: 1 }));
+    },
+    isRunning ? 1000 : null
+  );
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField
-          type="time"
-          name="timer"
-          inputRef={register}
-          defaultValue="00:00:00"
-          inputProps={{ step: 1 }}
-        />
+      <div>
+        {remainingTime !== null && (
+          <div>
+            <p>Remaining: {remainingTime.toFormat("hh : mm : ss")} </p>
+          </div>
+        )}
+      </div>
 
-        <Button type="submit" variant="contained">
-          Go
-        </Button>
-      </form>
-
-      {duration !== null && (
-        <div>
-          <p>{duration.toFormat("mm : ss")} </p>
-          <p>{duration.as("seconds")}</p>
-        </div>
-      )}
+      <Button variant="contained" onClick={toggleIsRunning}>
+        {isRunning ? "Pause" : "Start"}
+      </Button>
     </>
   );
 }

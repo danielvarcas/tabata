@@ -1,7 +1,7 @@
 import * as React from "react";
 import Head from "next/head";
 import { Typography } from "@material-ui/core";
-import { Timer } from "../components/Timer";
+import { TimerSetup } from "../components/TimerSetup";
 
 export default function Home() {
   return (
@@ -18,7 +18,7 @@ export default function Home() {
       <main>
         <Typography variant="h1">Tabata</Typography>
 
-        <Timer />
+        <TimerSetup />
       </main>
     </div>
   );
