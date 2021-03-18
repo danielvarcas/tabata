@@ -4,13 +4,12 @@ import {
   AppBar,
   Box,
   Container,
-  Grid,
   Paper,
   Toolbar,
   Typography,
   useTheme,
 } from "@material-ui/core";
-import { Timer } from "../components/Timer";
+import { Tabata } from "../components/Tabata";
 
 export default function Home() {
   const theme = useTheme();
@@ -35,7 +34,7 @@ export default function Home() {
         <Container>
           <Box marginTop={theme.spacing(0.25)}>
             <Paper>
-              <Timer />
+              <Tabata />
             </Paper>
           </Box>
         </Container>

@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as Luxon from "luxon";
 import { useInterval } from "react-use";
+import { TimerState } from "./Timer";
 
 type Props = {
   duration: Luxon.Duration;
