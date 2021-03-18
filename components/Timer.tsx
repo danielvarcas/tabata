@@ -64,7 +64,7 @@ export function Timer() {
           inputProps={{ step: 1 }}
         />
 
-        <Button type="submit" variant="contained">
+        <Button type="submit" variant="contained" color="primary">
           Set
         </Button>
       </form>
@@ -82,18 +82,36 @@ export function Timer() {
       </div>
 
       {timerState === "ready" && (
-        <Button variant="contained" type="button" onClick={startTimer}>
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          type="button"
+          onClick={startTimer}
+        >
           Start
         </Button>
       )}
 
       {(timerState === "running" || timerState === "paused") && (
         <>
-          <Button variant="contained" type="button" onClick={togglePaused}>
+          <Button
+            variant="contained"
+            type="button"
+            onClick={togglePaused}
+            color={timerState === "running" ? "default" : "primary"}
+            fullWidth
+          >
             {timerState === "running" ? "Pause" : "Resume"}
           </Button>
 
-          <Button variant="contained" type="button" onClick={stop}>
+          <Button
+            variant="contained"
+            type="button"
+            onClick={stop}
+            color="secondary"
+            fullWidth
+          >
             Stop
           </Button>
         </>
