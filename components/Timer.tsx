@@ -53,8 +53,8 @@ export function Timer() {
     }
   }, [timerState]);
 
-  return (
-    <>
+  if (timerState === "stopped") {
+    return (
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
           type="time"
@@ -68,7 +68,11 @@ export function Timer() {
           Set
         </Button>
       </form>
+    );
+  }
 
+  return (
+    <>
       <div>
         {remainingTime !== null && (
           <div>
