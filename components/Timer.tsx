@@ -1,20 +1,28 @@
 import * as React from "react";
 import * as Luxon from "luxon";
-import { Button } from "@material-ui/core";
+import { Button, TextField } from "@material-ui/core";
+import { useForm } from "react-hook-form";
 import { useInterval } from "react-use";
 
-type Props = {
-  duration: Luxon.Duration;
-};
+type TimerState = "ready" | "running" | "paused" | "stopped";
 
-type TimerState = "ready" | "running" | "paused";
-
-export function Timer({ duration }: Props) {
+export function Timer() {
   const [timerState, setTimerState] = React.useState<TimerState>("ready");
   const [
     remainingTime,
     setRemainingTime,
-  ] = React.useState<Luxon.Duration | null>(duration);
+  ] = React.useState<Luxon.Duration | null>(null);
+  const { register, handleSubmit } = useForm();
+  const [duration, setDuration] = React.useState<Luxon.Duration | null>(null);
+
+  function onSubmit(data) {
+    const [hours, minutes, seconds] = data.timer.split(":");
+    const duration = Luxon.Duration.fromObject({ hours, minutes, seconds });
+
+    setTimerState("ready");
+    setDuration(duration);
+    setRemainingTime(duration);
+  }
 
   useInterval(
     () => {
@@ -35,8 +43,32 @@ export function Timer({ duration }: Props) {
     }
   }
 
+  function stop() {
+    setTimerState("stopped");
+  }
+
+  React.useEffect(() => {
+    if (timerState === "stopped") {
+      setRemainingTime(null);
+    }
+  }, [timerState]);
+
   return (
     <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <TextField
+          type="time"
+          name="timer"
+          inputRef={register}
+          defaultValue="00:00:00"
+          inputProps={{ step: 1 }}
+        />
+
+        <Button type="submit" variant="contained">
+          Set
+        </Button>
+      </form>
+
       <div>
         {remainingTime !== null && (
           <div>
@@ -57,9 +89,9 @@ export function Timer({ duration }: Props) {
             {timerState === "running" ? "Pause" : "Resume"}
           </Button>
 
-          {/* <Button variant="contained" type="button" onClick={stopTimer}>
-          Stop
-        </Button> */}
+          <Button variant="contained" type="button" onClick={stop}>
+            Stop
+          </Button>
         </>
       )}
     </>
