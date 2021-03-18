@@ -3,15 +3,11 @@ import * as Luxon from "luxon";
 import { Box, Button, TextField, useTheme } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import { useInterval } from "react-use";
-
-type TimerState = "ready" | "running" | "paused" | "elapsed" | "stopped";
+import { Time } from "./Time";
 
 export function Timer() {
   const [timerState, setTimerState] = React.useState<TimerState>("stopped");
-  const [
-    remainingTime,
-    setRemainingTime,
-  ] = React.useState<Luxon.Duration | null>(null);
+  const [duration, setDuration] = React.useState<Luxon.Duration | null>(null);
   const { register, handleSubmit } = useForm();
   const theme = useTheme();
 
@@ -20,20 +16,8 @@ export function Timer() {
     const duration = Luxon.Duration.fromObject({ hours, minutes, seconds });
 
     setTimerState("ready");
-    setRemainingTime(duration);
+    setDuration(duration);
   }
-
-  // The useInterval interferes with button focus due to the re-render
-  useInterval(
-    () => {
-      if (remainingTime.as("seconds") > 0) {
-        setRemainingTime(remainingTime.minus({ seconds: 1 }));
-      } else {
-        setTimerState("elapsed");
-      }
-    },
-    timerState === "running" ? 1000 : null
-  );
 
   function startTimer() {
     setTimerState("running");
@@ -51,13 +35,6 @@ export function Timer() {
     setTimerState("stopped");
   }
 
-  React.useEffect(() => {
-    console.log(timerState);
-    if (timerState === "stopped") {
-      setRemainingTime(null);
-    }
-  }, [timerState]);
-
   function TimerContent() {
     if (timerState === "stopped") {
       return (
@@ -67,7 +44,7 @@ export function Timer() {
               type="time"
               name="timer"
               inputRef={register}
-              defaultValue="00:00:00"
+              defaultValue={duration?.toFormat("hh:mm:ss") || "00:00:00"}
               inputProps={{ step: 1 }}
             />
           </Box>
@@ -81,13 +58,13 @@ export function Timer() {
 
     return (
       <>
-        <div>
-          {remainingTime !== null && (
-            <div>
-              <p>{remainingTime.toFormat("hh : mm : ss")} </p>
-            </div>
-          )}
-        </div>
+        {duration !== null && timerState !== "elapsed" && (
+          <Time
+            duration={duration}
+            timerState={timerState}
+            setTimerState={setTimerState}
+          />
+        )}
 
         {timerState === "ready" && (
           <Button
