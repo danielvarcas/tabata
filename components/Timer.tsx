@@ -20,7 +20,7 @@ export function Timer({ duration }: Props) {
     () => {
       setRemainingTime(remainingTime.minus({ seconds: 1 }));
     },
-    timerState === "running" ? 1000 : null
+    timerState === "running" && remainingTime.as("seconds") > 0 ? 1000 : null
   );
 
   function startTimer() {
@@ -52,9 +52,15 @@ export function Timer({ duration }: Props) {
       )}
 
       {(timerState === "running" || timerState === "paused") && (
-        <Button variant="contained" type="button" onClick={togglePaused}>
-          {timerState === "running" ? "Pause" : "Resume"}
-        </Button>
+        <>
+          <Button variant="contained" type="button" onClick={togglePaused}>
+            {timerState === "running" ? "Pause" : "Resume"}
+          </Button>
+
+          {/* <Button variant="contained" type="button" onClick={stopTimer}>
+          Stop
+        </Button> */}
+        </>
       )}
     </>
   );
