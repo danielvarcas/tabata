@@ -13,7 +13,6 @@ export function Timer() {
     setRemainingTime,
   ] = React.useState<Luxon.Duration | null>(null);
   const { register, handleSubmit } = useForm();
-  const [duration, setDuration] = React.useState<Luxon.Duration | null>(null);
   const theme = useTheme();
 
   function onSubmit(data) {
@@ -21,7 +20,6 @@ export function Timer() {
     const duration = Luxon.Duration.fromObject({ hours, minutes, seconds });
 
     setTimerState("ready");
-    setDuration(duration);
     setRemainingTime(duration);
   }
 
