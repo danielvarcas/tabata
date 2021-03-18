@@ -11,7 +11,6 @@ type Props = {
 export function Time({ duration, timerState, setTimerState }: Props) {
   const [remaining, setRemaining] = React.useState<Luxon.Duration>(duration);
 
-  // The useInterval interferes with button focus due to the re-render
   useInterval(
     () => {
       if (remaining.as("seconds") > 0) {

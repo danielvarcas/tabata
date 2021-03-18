@@ -2,7 +2,6 @@ import * as React from "react";
 import * as Luxon from "luxon";
 import { Box, Button, TextField, useTheme } from "@material-ui/core";
 import { useForm } from "react-hook-form";
-import { useInterval } from "react-use";
 import { Time } from "./Time";
 
 export function Timer() {
