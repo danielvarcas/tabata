@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as Luxon from "luxon";
-import { Box, Button, Card, Paper, TextField } from "@material-ui/core";
+import { Box, Button, TextField, useTheme } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import { useInterval } from "react-use";
 
@@ -14,6 +14,7 @@ export function Timer() {
   ] = React.useState<Luxon.Duration | null>(null);
   const { register, handleSubmit } = useForm();
   const [duration, setDuration] = React.useState<Luxon.Duration | null>(null);
+  const theme = useTheme();
 
   function onSubmit(data) {
     const [hours, minutes, seconds] = data.timer.split(":");
@@ -24,6 +25,7 @@ export function Timer() {
     setRemainingTime(duration);
   }
 
+  // The useInterval interferes with button focus due to the re-render
   useInterval(
     () => {
       if (remainingTime.as("seconds") > 0) {
@@ -62,13 +64,15 @@ export function Timer() {
     if (timerState === "stopped") {
       return (
         <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            type="time"
-            name="timer"
-            inputRef={register}
-            defaultValue="00:00:00"
-            inputProps={{ step: 1 }}
-          />
+          <Box margin={theme.spacing(0.25)}>
+            <TextField
+              type="time"
+              name="timer"
+              inputRef={register}
+              defaultValue="00:00:00"
+              inputProps={{ step: 1 }}
+            />
+          </Box>
 
           <Button type="submit" variant="contained" color="primary" fullWidth>
             Set
